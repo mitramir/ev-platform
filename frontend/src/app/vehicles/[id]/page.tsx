@@ -100,7 +100,7 @@ export default function VehicleDetail() {
   };
 
   const handleTransitionEnd = () => {
-    setIsTransitioning(false); // Reset transitioning state after animation
+    setIsTransitioning(false);
   };
 
   if (loading)
@@ -139,7 +139,7 @@ export default function VehicleDetail() {
                 currentImageIndex + 1
               }`}
               className="w-full h-full object-cover rounded-md transition-opacity duration-300 ease-in-out"
-              style={{ opacity: isTransitioning ? 0.5 : 1 }} // Fade effect during transition
+              style={{ opacity: isTransitioning ? 0.5 : 1 }}
               onError={handleImageError}
               onTransitionEnd={handleTransitionEnd}
             />

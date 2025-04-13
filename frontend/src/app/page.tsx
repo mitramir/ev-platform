@@ -90,7 +90,7 @@ export default function Home() {
       setVehicles((prev) => [...prev, newVehicle]);
       setFilteredVehicles((prev) => [...prev, newVehicle]);
       setShowCreateForm(false);
-      setShowNotification(true); // Show notification after successful creation
+      setShowNotification(true);
     } catch {
       setError("Failed to create vehicle.");
     }
@@ -130,7 +130,7 @@ export default function Home() {
     if (action === "addAnother") {
       setShowCreateForm(true);
     } else {
-      // Already on main page, no action needed
+      //already on main page, no action needed
     }
   };
 
@@ -292,7 +292,7 @@ export default function Home() {
                 <div key={vehicle.id} className="relative">
                   <VehicleCard
                     vehicle={vehicle}
-                    onClick={() => router.push(`/vehicles/${vehicle.id}`)} // Ensure this is present
+                    onClick={() => router.push(`/vehicles/${vehicle.id}`)}
                   />
                   <div className="absolute top-2 right-2 flex gap-2">
                     <button

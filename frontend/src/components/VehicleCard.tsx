@@ -16,15 +16,15 @@ export function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
       : ["/placeholder.jpg"];
 
   const handleNextImage = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the card's onClick from triggering
-    if (isTransitioning) return; // Prevent multiple clicks during transition
+    e.stopPropagation();
+    if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
   const handlePrevImage = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the card's onClick from triggering
-    if (isTransitioning) return; // Prevent multiple clicks during transition
+    e.stopPropagation();
+    if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
@@ -34,13 +34,13 @@ export function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
   };
 
   const handleTransitionEnd = () => {
-    setIsTransitioning(false); // Reset transitioning state after animation
+    setIsTransitioning(false);
   };
 
   return (
     <div
       className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105"
-      onClick={onClick} // This will now work as expected
+      onClick={onClick}
     >
       <div className="relative w-full h-48">
         <img
@@ -49,7 +49,7 @@ export function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
             currentImageIndex + 1
           }`}
           className="w-full h-full object-cover transition-opacity duration-300 ease-in-out"
-          style={{ opacity: isTransitioning ? 0.5 : 1 }} // Fade effect during transition
+          style={{ opacity: isTransitioning ? 0.5 : 1 }}
           onError={handleImageError}
           onTransitionEnd={handleTransitionEnd}
         />

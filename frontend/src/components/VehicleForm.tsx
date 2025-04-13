@@ -121,7 +121,7 @@ export function VehicleForm({
     }));
   };
 
-  // Prevent scrolling from changing number input values
+  //prevent scrolling from changing number input values
   const preventScrollChange = (e: React.WheelEvent<HTMLInputElement>) => {
     e.currentTarget.blur();
   };
