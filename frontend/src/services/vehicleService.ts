@@ -14,3 +14,14 @@ export async function fetchVehicles(): Promise<Vehicle[]> {
   console.log("Fetched data:", data);
   return data;
 }
+
+export async function fetchVehicleById(id: string): Promise<Vehicle> {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const response = await fetch(`${API_URL}/vehicles/${id}`, {
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch vehicle");
+  }
+  return response.json();
+}

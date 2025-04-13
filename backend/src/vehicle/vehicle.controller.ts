@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
@@ -21,8 +22,12 @@ export class VehicleController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Vehicle> {
-    return this.vehicleService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<Vehicle> {
+    const vehicle = await this.vehicleService.findOne(id);
+    if (!vehicle) {
+      throw new NotFoundException(`Vehicle with ID ${id} not found`);
+    }
+    return vehicle;
   }
 
   @Post()
