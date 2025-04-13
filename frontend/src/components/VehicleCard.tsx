@@ -1,34 +1,94 @@
 import { Vehicle } from "@/types/vehicle";
-import Link from "next/link";
+import { useState } from "react";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
+  onClick?: () => void;
 }
 
-export function VehicleCard({ vehicle }: VehicleCardProps) {
+export function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const images =
+    vehicle.images && vehicle.images.length > 0
+      ? vehicle.images
+      : ["/placeholder.jpg"];
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the card's onClick from triggering
+    if (isTransitioning) return; // Prevent multiple clicks during transition
+    setIsTransitioning(true);
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the card's onClick from triggering
+    if (isTransitioning) return; // Prevent multiple clicks during transition
+    setIsTransitioning(true);
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = "/placeholder.jpg";
+  };
+
+  const handleTransitionEnd = () => {
+    setIsTransitioning(false); // Reset transitioning state after animation
+  };
+
   return (
-    <Link href={`/vehicles/${vehicle.id}`} className="block">
-      <div className="border rounded-lg p-4 bg-white shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+    <div
+      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105"
+      onClick={onClick} // This will now work as expected
+    >
+      <div className="relative w-full h-48">
         <img
-          src={vehicle.images[0] || "/placeholder.jpg"}
-          alt={`${vehicle.brand} ${vehicle.model}`}
-          className="w-full h-48 object-cover rounded-md mb-4"
+          src={images[currentImageIndex]}
+          alt={`${vehicle.brand} ${vehicle.model} - Image ${
+            currentImageIndex + 1
+          }`}
+          className="w-full h-full object-cover transition-opacity duration-300 ease-in-out"
+          style={{ opacity: isTransitioning ? 0.5 : 1 }} // Fade effect during transition
+          onError={handleImageError}
+          onTransitionEnd={handleTransitionEnd}
         />
-        <h2 className="text-xl font-semibold text-gray-800">
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={handlePrevImage}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
+              disabled={isTransitioning}
+              aria-label="Previous image"
+            >
+              ←
+            </button>
+            <button
+              onClick={handleNextImage}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
+              disabled={isTransitioning}
+              aria-label="Next image"
+            >
+              →
+            </button>
+          </>
+        )}
+      </div>
+      <div className="p-4 flex flex-col h-36">
+        <h2 className="text-lg font-semibold text-gray-800 truncate">
           {vehicle.brand} {vehicle.model} ({vehicle.year})
         </h2>
-        <p className="text-lg font-bold text-green-600">
+        <p className="text-green-600 font-bold">
           ${vehicle.price.toLocaleString()}
         </p>
         <p className="text-gray-600">Range: {vehicle.range_km} km</p>
         <p className="text-gray-600">Condition: {vehicle.condition}</p>
-        <p className="text-gray-600">Location: {vehicle.location}</p>
         {vehicle.accidents && (
-          <p className="text-red-500 text-sm">
+          <p className="text-red-500 truncate">
             Accident: {vehicle.accident_description || "Reported"}
           </p>
         )}
       </div>
-    </Link>
+    </div>
   );
 }

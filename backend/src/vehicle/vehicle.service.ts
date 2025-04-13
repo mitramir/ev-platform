@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehicle } from './vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @Injectable()
 export class VehicleService {
@@ -24,22 +25,27 @@ export class VehicleService {
   }
 
   async create(createVehicleDto: CreateVehicleDto): Promise<Vehicle> {
+    if (!createVehicleDto.accidents) {
+      createVehicleDto.accident_description = undefined;
+    }
     const vehicle = this.vehicleRepository.create(createVehicleDto);
     return this.vehicleRepository.save(vehicle);
   }
 
   async update(
     id: string,
-    updateVehicleDto: Partial<CreateVehicleDto>,
+    updateVehicleDto: UpdateVehicleDto,
   ): Promise<Vehicle> {
-    await this.vehicleRepository.update(id, updateVehicleDto);
-    return this.findOne(id);
+    const vehicle = await this.findOne(id);
+    if (updateVehicleDto.accidents === false) {
+      updateVehicleDto.accident_description = undefined;
+    }
+    Object.assign(vehicle, updateVehicleDto);
+    return this.vehicleRepository.save(vehicle);
   }
 
   async remove(id: string): Promise<void> {
-    const result = await this.vehicleRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Vehicle with ID ${id} not found`);
-    }
+    const vehicle = await this.findOne(id);
+    await this.vehicleRepository.remove(vehicle);
   }
 }
