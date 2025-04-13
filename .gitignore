@@ -1,0 +1,27 @@
+# Node.js
+node_modules/
+*.log
+npm-debug.log*
+
+# Build outputs
+backend/dist/
+frontend/.next/
+frontend/out/
+
+# Environment variables
+.env
+*.env
+
+# Docker
+*.dockerignore
+docker-compose.*.yml
+
+# IDE files
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Database volumes
+postgres-data/
